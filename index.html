@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Lucid — Salesforce LWC App Demo (updated)</title>
+  <title>Lucid — Salesforce LWC App Demo (responsive)</title>
   <style>
     :root{
       --lucid-primary: #003c63;
@@ -30,12 +30,12 @@
     }
 
     /* APP SHELL */
-    .app-shell{background:var(--card-bg); box-shadow: var(--shadow); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:20;}
+    .app-shell{background:var(--card-bg); box-shadow: var(--shadow); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:40;}
     .topbar{max-width:var(--max-page-width); margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 20px;}
     .left-actions, .right-actions{display:flex; align-items:center; gap:12px;}
     .logo-wrap{display:flex; align-items:center; gap:10px;}
     .logo {display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:2px; color:var(--lucid-primary);}
-    .logo img{height:26px; display:block;}
+    .logo img{height:56px; display:block;}
     .small-cloud{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px}
     .small-cloud svg{width:22px;height:22px;display:block}
 
@@ -52,13 +52,22 @@
 
     /* secondary nav (moved launcher before Home) */
     .secondary-nav{max-width:var(--max-page-width); margin:0 auto; padding:10px 20px; display:flex; align-items:center; gap:18px; border-bottom:4px solid #e9f2ff}
-    .nav-item{padding:6px 8px; cursor:pointer; border-radius:6px; color:var(--lucid-primary); font-weight:600}
+    .nav-item{padding:6px 8px; cursor:pointer; border-radius:6px; color:var(--lucid-primary); font-weight:600; white-space:nowrap}
     .nav-item.active{background:transparent; color:var(--lucid-primary)}
     .launcher-small{display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:8px; cursor:pointer; border:1px solid transparent}
     .grid-dots{width:18px; height:18px; display:grid; grid-template-columns:repeat(3,1fr); gap:3px; align-items:center; justify-items:center}
     .grid-dots span{width:4px; height:4px; background:#333; border-radius:50%}
 
     .brand-mark{margin-left:auto; opacity:0.8; font-weight:700}
+
+    /* mobile nav */
+    .mobile-menu-btn{display:none; width:44px;height:44px;border-radius:8px;background:#fff;border:1px solid var(--border);align-items:center;justify-content:center}
+    .mobile-nav-overlay{position:fixed; inset:0; background:rgba(0,0,0,0.45); display:none; z-index:80}
+    .mobile-nav{position:fixed; left:0; top:0; bottom:0; width:86%; max-width:360px; background:#fff; box-shadow:0 6px 30px rgba(2,6,23,0.4); padding:20px; transform:translateX(-8%); transition:transform .22s ease; overflow:auto}
+    .mobile-nav.open{transform:translateX(0)}
+    .mobile-nav .nav-item{display:block; padding:12px 8px; border-radius:8px; margin-bottom:6px}
+    .mobile-nav .close-btn{display:flex; justify-content:flex-end; margin-bottom:8px}
+    .mobile-nav .close-btn button{background:transparent;border:none;font-size:20px;cursor:pointer}
 
     /* PAGE LAYOUT */
     .page{max-width:var(--max-page-width); margin:20px auto; padding:0 20px 80px}
@@ -90,7 +99,8 @@
     .two-col{display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center}
 
     table{width:100%; border-collapse:collapse}
-    th, td{padding:10px 8px; text-align:left; border-bottom:1px solid #f1f3f6}
+    .table-wrap{overflow-x:auto; border-radius:8px}
+    th, td{padding:10px 8px; text-align:left; border-bottom:1px solid #f1f3f6; white-space:nowrap}
     th{font-size:13px; color:var(--lucid-muted)}
     tr:hover td{background:#fff}
 
@@ -110,11 +120,43 @@
 
     @media (max-width:1100px){
       .grid-3{grid-template-columns:1fr; gap:12px}
-      .secondary-nav{overflow:auto}
-      .search-box{max-width:420px}
+      .grid-2{grid-template-columns:1fr; gap:12px}
       .grid-analytics{grid-template-columns:1fr}
       .vehicle-grid{grid-template-columns:1fr}
+      .search-box{max-width:420px}
+      .logo img{height:46px}
+      .brand-mark{display:none}
+      .secondary-nav{overflow:auto; padding:8px 14px}
+      .nav-item{padding:8px 6px}
     }
+
+    /* Mobile-specific */
+    @media (max-width:760px){
+      .topbar{padding:8px 12px;}
+      .logo img{height:42px}
+      .search-wrap{display:block; padding:8px 12px 12px}
+      .search-box{width:100%; max-width:100%}
+      .left-actions{gap:8px}
+      .right-actions{gap:6px}
+      .avatar{width:30px;height:30px}
+      .icon-btn{width:34px;height:34px}
+      .secondary-nav{display:none} /* hide desktop secondary nav on small screens */
+      .mobile-menu-btn{display:flex}
+
+      /* KPI blocks stacked */
+      .kpi-row{flex-direction:column}
+      .kpi{width:100%}
+      .card{padding:14px}
+      .page{padding:0 12px 80px}
+      .table-wrap{overflow:auto}
+      th, td{padding:10px 6px}
+
+      /* reduce font sizes slightly */
+      .section-title{font-size:16px}
+    }
+
+    /* show mobile nav overlay when open */
+    .mobile-nav-overlay.show{display:block}
   </style>
 </head>
 <body>
@@ -122,16 +164,18 @@
   <header class="app-shell">
     <div class="topbar">
       <div class="left-actions">
+        <!-- mobile menu button (only shown on small screens) -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">☰</button>
+
         <!-- small Salesforce cloud (before the Lucid logo) -->
-        <div class="small-cloud" title="Salesforce">
-          <!-- small Salesforce cloud svg -->
+        <div class="small-cloud" title="Salesforce" aria-hidden="true">
           <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <g transform="translate(0 4) scale(0.85)" fill="#00A1E0"><path d="M48.6 23.8c-0.7-6.1-5.8-10.8-12.1-11.6-1.7-4.7-6.2-8.1-11.4-8.1-5.8 0-10.6 3.9-12.1 9.2-7 0.5-12.3 6.4-12.3 13.5C0.8 42 8.3 49 17.9 49h30.6C55.8 49 63 41.7 63 32.7 63 28.9 61.6 25.4 58.9 23.1 55.9 20.5 52 21.1 48.6 23.8z"></path></g>
           </svg>
         </div>
 
         <!-- Lucid logo (local image with SVG fallback) -->
-        <div class="logo-wrap">
+        <div class="logo-wrap" role="img" aria-label="Lucid logo">
           <div class="logo">
             <img id="lucidLogoImg"
                  src="images/png-transparent-lucid-motors-hd-logo-removebg-preview.png"
@@ -169,7 +213,7 @@
       </div>
     </div>
 
-    <!-- secondary nav: launcher BEFORE Home -->
+    <!-- secondary nav: launcher BEFORE Home (hidden on mobile) -->
     <nav class="secondary-nav" id="secondaryNav">
       <div class="launcher-small" title="App Launcher" onclick="alert('App Launcher demo')">
         <div class="grid-dots" aria-hidden="true">
@@ -186,6 +230,23 @@
       <div class="nav-item" data-page="leads">Leads</div>
       <div class="brand-mark">LUCID</div>
     </nav>
+
+    <!-- mobile nav overlay -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay" role="dialog" aria-hidden="true">
+      <div class="mobile-nav" id="mobileNavPane">
+        <div class="close-btn"><button id="mobileNavClose" aria-label="Close mobile nav">✕</button></div>
+        <div class="nav-item" data-page="home">Home</div>
+        <div class="nav-item" data-page="accounts">Accounts</div>
+        <div class="nav-item" data-page="sales">Sales</div>
+        <div class="nav-item" data-page="dashboards">Dashboards</div>
+        <div class="nav-item" data-page="leads">Leads</div>
+        <hr style="margin:12px 0; border:none; border-top:1px solid var(--border)">
+        <div style="font-weight:700; margin-bottom:8px">Quick Links</div>
+        <div class="nav-item">Reports</div>
+        <div class="nav-item">Chatter</div>
+        <div class="nav-item">Groups</div>
+      </div>
+    </div>
   </header>
 
   <!-- PAGES -->
@@ -320,11 +381,11 @@
                 <div class="muted">Manufacturing</div>
               </div>
               <div style="width:140px">
-<img id="lucidLogoImg"
+ <img id="lucidLogoImg"
      src="images/download-removebg-preview.png"
      alt="Lucid Logo"
      onerror="fallbackLucidLogo()"
-     style="height:56px; width:150px; max-width:260px; object-fit:contain;" />               </div>
+     style="height:56px; width:150px; max-width:260px; object-fit:contain;" />                  </div>
             </div>
 
             <hr style="border:none; border-top:1px solid var(--border); margin:12px 0">
@@ -358,16 +419,16 @@
     <section id="page-accounts" class="page-panel" style="display:none">
       <h1 class="section-title">Accounts — Western Region Accounts (Lucid Demo)</h1>
       <div class="card" style="margin-bottom:12px">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th><th>Account Name</th><th>Record Type</th><th>Billing Country</th><th>Billing City</th><th>Industry</th><th>Account Owner</th>
-            </tr>
-          </thead>
-          <tbody id="accountsTableBody">
-            <!-- populated by JS -->
-          </tbody>
-        </table>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Account Name</th><th>Record Type</th><th>Billing Country</th><th>Billing City</th><th>Industry</th><th>Account Owner</th>
+              </tr>
+            </thead>
+            <tbody id="accountsTableBody"></tbody>
+          </table>
+        </div>
       </div>
 
       <div class="grid-2" style="margin-top:12px">
@@ -397,9 +458,7 @@
       <div style="margin-top:16px">
         <div class="card">
           <div class="section-title">Contacts</div>
-          <div id="contactsList">
-            <!-- populated from JS -->
-          </div>
+          <div id="contactsList"></div>
         </div>
       </div>
     </section>
@@ -410,14 +469,16 @@
       <div class="grid-2">
         <div class="card">
           <div class="section-title">Active Opportunities (Lucid)</div>
-          <table>
-            <thead><tr><th>Opportunity</th><th>Account</th><th>Stage</th><th>Amount</th></tr></thead>
-            <tbody>
-              <tr><td>Air GT Order</td><td>Lucid Motors</td><td>Proposal</td><td>$198,000</td></tr>
-              <tr><td>Fleet - Gravity</td><td>Lucid Fleet Services</td><td>Negotiation</td><td>$520,000</td></tr>
-              <tr><td>Air Standard</td><td>Acme Partners</td><td>Closed Won</td><td>$86,000</td></tr>
-            </tbody>
-          </table>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Opportunity</th><th>Account</th><th>Stage</th><th>Amount</th></tr></thead>
+              <tbody>
+                <tr><td>Air GT Order</td><td>Lucid Motors</td><td>Proposal</td><td>$198,000</td></tr>
+                <tr><td>Fleet - Gravity</td><td>Lucid Fleet Services</td><td>Negotiation</td><td>$520,000</td></tr>
+                <tr><td>Air Standard</td><td>Acme Partners</td><td>Closed Won</td><td>$86,000</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div class="card">
@@ -454,11 +515,10 @@
         </div>
       </div>
 
-      <!-- New: analytics mini grid -->
+      <!-- analytics mini grid -->
       <div class="grid-analytics" style="margin-bottom:12px">
         <div class="card">
           <div class="section-title">Advanced Analytics — Monthly Trend</div>
-          <!-- simple SVG sparkline -->
           <svg width="100%" height="80" viewBox="0 0 200 80" preserveAspectRatio="none" aria-hidden="true">
             <polyline fill="none" stroke="#1687ff" stroke-width="3" points="0,60 30,45 60,30 90,20 120,28 150,18 180,22 200,14"/>
           </svg>
@@ -495,7 +555,7 @@
         </div>
       </div>
 
-      <!-- New: Vehicle Showcase -->
+      <!-- Vehicle Showcase -->
       <div class="grid-2" style="margin-bottom:12px">
         <div class="card">
           <div class="section-title">Vehicle Showcase</div>
@@ -521,8 +581,7 @@
      src="images/OIP__3_-removebg-preview.png"
      alt="Lucid Logo"
      onerror="fallbackLucidLogo()"
-     style="height:56px; width:150px; max-width:260px; object-fit:contain;" />     
-               <div class="vehicle-meta">
+     style="height:56px; width:150px; max-width:260px; object-fit:contain;" />               <div class="vehicle-meta">
                 <div style="font-weight:700">Lucid Gravity</div>
                 <div class="muted">Range: 300+ mi • SUV platform</div>
                 <div style="display:flex; gap:8px; align-items:center; margin-top:6px">
@@ -534,7 +593,7 @@
           </div>
         </div>
 
-        <!-- keep original region chart in right column -->
+        <!-- revenue mix -->
         <div class="card">
           <div class="section-title">Revenue Mix — Product Lines</div>
           <div style="height:220px; border-radius:8px; background:linear-gradient(180deg,#fff,#fcfdff); display:flex;align-items:center;justify-content:center">
@@ -560,7 +619,7 @@
         <div class="card">
           <div class="section-title">Test Drive Impact (conversion)</div>
           <div style="height:120px; display:flex; align-items:center; justify-content:center;">
-            <div class="muted">Test drive -> order conversion</div>
+            <div class="muted">Test drive → order conversion</div>
           </div>
         </div>
       </div>
@@ -569,14 +628,14 @@
     <!-- Leads page -->
     <section id="page-leads" class="page-panel" style="display:none">
       <h1 class="section-title">Leads</h1>
-      <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px">
-        <input placeholder="Filter leads..." style="padding:8px;border:1px solid var(--border); border-radius:8px; width:280px"/>
+      <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px; flex-wrap:wrap">
+        <input placeholder="Filter leads..." style="padding:8px;border:1px solid var(--border); border-radius:8px; width:280px; min-width:160px"/>
         <button class="btn primary" onclick="alert('Add lead')">New Lead</button>
       </div>
 
       <div>
         <div class="lead-item">
-          <div style="width:44px;height:44px;border-radius:8px;background:#eef7ff"></div>
+          <div style="width:44px;height:44px;border-radius:8px;background:#eef7ff;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--lucid-primary)">SS</div>
           <div style="flex:1">
             <div style="font-weight:700">Samantha Smith-Jones</div>
             <div class="muted">s.smith@example.com — Newark, CA</div>
@@ -588,7 +647,7 @@
         </div>
 
         <div class="lead-item">
-          <div style="width:44px;height:44px;border-radius:8px;background:#fff0f0"></div>
+          <div style="width:44px;height:44px;border-radius:8px;background:#fff0f0;display:flex;align-items:center;justify-content:center;font-weight:700;color:#b53a3a">JW</div>
           <div style="flex:1">
             <div style="font-weight:700">John Watson</div>
             <div class="muted">j.watson@example.com — Palo Alto, CA</div>
@@ -615,19 +674,52 @@
       }
     }
 
-    // SPA nav
-    const navItems = document.querySelectorAll('.nav-item');
-    const panels = document.querySelectorAll('.page-panel');
+    // Mobile nav toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+    const mobileNavPane = document.getElementById('mobileNavPane');
+    const mobileNavClose = document.getElementById('mobileNavClose');
 
-    navItems.forEach(item => {
+    function openMobileNav(){
+      mobileNavOverlay.classList.add('show');
+      mobileNavPane.classList.add('open');
+      mobileNavOverlay.setAttribute('aria-hidden','false');
+    }
+    function closeMobileNav(){
+      mobileNavOverlay.classList.remove('show');
+      mobileNavPane.classList.remove('open');
+      mobileNavOverlay.setAttribute('aria-hidden','true');
+    }
+
+    mobileMenuBtn && mobileMenuBtn.addEventListener('click', openMobileNav);
+    mobileNavClose && mobileNavClose.addEventListener('click', closeMobileNav);
+    mobileNavOverlay && mobileNavOverlay.addEventListener('click', function(e){
+      if(e.target === mobileNavOverlay) closeMobileNav();
+    });
+
+    // SPA nav (desktop + mobile)
+    function gotoPage(page){
+      const navItems = document.querySelectorAll('.nav-item');
+      const panels = document.querySelectorAll('.page-panel');
+      navItems.forEach(i => {
+        if(i.dataset.page === page) i.classList.add('active'); else i.classList.remove('active');
+      });
+      panels.forEach(p => p.style.display = (p.id === 'page-' + page) ? '' : 'none');
+      window.scrollTo(0,0);
+    }
+
+    // attach click events to both desktop nav and mobile nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
       item.addEventListener('click', () => {
-        navItems.forEach(i=>i.classList.remove('active'));
-        item.classList.add('active');
         const page = item.dataset.page;
-        panels.forEach(p => p.style.display = p.id === 'page-' + page ? '' : 'none');
-        window.scrollTo(0,0);
+        if(page) gotoPage(page);
+        // if mobile, close overlay
+        closeMobileNav();
       });
     });
+
+    // show home by default
+    gotoPage('home');
 
     // sample accounts (Lucid-inclusive)
     const accounts = [
@@ -681,7 +773,6 @@
         contactsListEl.appendChild(div);
       });
 
-      // small note
       const note = document.createElement('div');
       note.className = 'muted';
       note.style.marginTop = '8px';
