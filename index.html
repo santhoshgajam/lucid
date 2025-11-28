@@ -64,6 +64,7 @@
     .page{max-width:var(--max-page-width); margin:20px auto; padding:0 20px 80px}
     .grid-3{display:grid; grid-template-columns: 1fr 1fr 360px; gap:var(--gap)}
     .grid-2{display:grid; grid-template-columns: 1fr 1fr; gap:var(--gap)}
+    .grid-analytics{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px}
 
     /* cards */
     .card{background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); padding:18px; box-shadow:none}
@@ -101,10 +102,18 @@
     .btn.primary{background:var(--lucid-cta); color:#fff}
     .inline-link{color:var(--lucid-cta); text-decoration:none; font-weight:600}
 
+    /* vehicle showcase */
+    .vehicle-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    .vehicle-card{display:flex; gap:12px; align-items:center; border-radius:8px; padding:12px; border:1px solid var(--border); background:#fff}
+    .vehicle-card img{width:140px; height:80px; object-fit:cover; border-radius:8px}
+    .vehicle-meta{display:flex; flex-direction:column; gap:6px}
+
     @media (max-width:1100px){
       .grid-3{grid-template-columns:1fr; gap:12px}
       .secondary-nav{overflow:auto}
       .search-box{max-width:420px}
+      .grid-analytics{grid-template-columns:1fr}
+      .vehicle-grid{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -124,14 +133,11 @@
         <!-- Lucid logo (local image with SVG fallback) -->
         <div class="logo-wrap">
           <div class="logo">
-            <!-- attempt to load local image; if fails, fallback to inline SVG (handled with onerror) -->
-          <img id="lucidLogoImg"
-     src="images/png-transparent-lucid-motors-hd-logo-removebg-preview.png"
-     alt="Lucid Logo"
-     onerror="fallbackLucidLogo()"
-     style="height:56px; width:150px; max-width:260px; object-fit:contain;" />
-
-            <!-- inline hidden fallback svg (will be used by JS if image fails) -->
+            <img id="lucidLogoImg"
+                 src="images/png-transparent-lucid-motors-hd-logo-removebg-preview.png"
+                 alt="Lucid Logo"
+                 onerror="fallbackLucidLogo()"
+                 style="height:56px; width:150px; max-width:260px; object-fit:contain;" />
             <div id="lucidSvgFallback" style="display:none">
               <svg role="img" aria-label="Lucid Motors Logo" width="140" height="20" viewBox="0 0 400 23" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:22px;">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M71.2574 22.0428C69.5663 22.1166 13.2359 22.0537 11.536 22.0537C4.93578 22.0537 0 17.3682 0 12.3484V0.873549H8.70798V12.0618C8.70798 15.5618 11.3432 18.1759 15.04 18.1759H71.2574V22.0428Z" fill="#003c63"></path>
@@ -186,6 +192,7 @@
   <main class="page" id="app">
     <!-- Home / Dashboard -->
     <section id="page-home" class="page-panel">
+      <!-- HOME left unchanged as requested -->
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px">
         <h1 style="margin:0; font-size:26px">Internal Sales Dashboard</h1>
         <div class="muted">Demo • Lucid Motors - Salesforce UI</div>
@@ -197,7 +204,7 @@
           <div class="card kpi-row" style="margin-bottom:16px">
             <div class="kpi">
               <div class="label">Total Leads</div>
-              <div class="value">620</div> <!-- adjusted with Lucid demo numbers -->
+              <div class="value">620</div>
             </div>
             <div class="kpi">
               <div class="label">Qualified Leads</div>
@@ -313,11 +320,11 @@
                 <div class="muted">Manufacturing</div>
               </div>
               <div style="width:140px">
- <img id="lucidLogoImg"
+<img id="lucidLogoImg"
      src="images/download-removebg-preview.png"
      alt="Lucid Logo"
      onerror="fallbackLucidLogo()"
-     style="height:56px; width:150px; max-width:260px; object-fit:contain;" />              </div>
+     style="height:56px; width:150px; max-width:260px; object-fit:contain;" />               </div>
             </div>
 
             <hr style="border:none; border-top:1px solid var(--border); margin:12px 0">
@@ -385,6 +392,16 @@
           </ul>
         </div>
       </div>
+
+      <!-- NEW: Contacts card (for accounts page) -->
+      <div style="margin-top:16px">
+        <div class="card">
+          <div class="section-title">Contacts</div>
+          <div id="contactsList">
+            <!-- populated from JS -->
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Sales page -->
@@ -414,10 +431,12 @@
       </div>
     </section>
 
-    <!-- Dashboards page -->
+    <!-- Dashboards page (UPDATED) -->
     <section id="page-dashboards" class="page-panel" style="display:none">
-      <h1 class="section-title">Dashboards — Lucid Executive View</h1>
-      <div class="grid-2">
+      <h1 class="section-title">Dashboards — Lucid Executive & Analytics View</h1>
+
+      <!-- top KPI row (kept) -->
+      <div class="grid-2" style="margin-bottom:12px">
         <div class="card">
           <div class="section-title">Executive KPI</div>
           <div style="display:flex; gap:12px">
@@ -431,6 +450,117 @@
           <div class="section-title">Sales by Region</div>
           <div style="height:160px; border-radius:8px; background:linear-gradient(180deg,#fff,#fcfdff); display:flex;align-items:center;justify-content:center">
             <div class="muted">Regional map/chart placeholder</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New: analytics mini grid -->
+      <div class="grid-analytics" style="margin-bottom:12px">
+        <div class="card">
+          <div class="section-title">Advanced Analytics — Monthly Trend</div>
+          <!-- simple SVG sparkline -->
+          <svg width="100%" height="80" viewBox="0 0 200 80" preserveAspectRatio="none" aria-hidden="true">
+            <polyline fill="none" stroke="#1687ff" stroke-width="3" points="0,60 30,45 60,30 90,20 120,28 150,18 180,22 200,14"/>
+          </svg>
+          <div class="muted" style="margin-top:8px">Revenue trend (last 8 months)</div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Advanced Analytics — Cohort Conversion</div>
+          <div style="display:flex; gap:8px; align-items:center">
+            <div style="flex:1">
+              <div style="font-weight:700; font-size:20px">24%</div>
+              <div class="muted">New-to-Order Conversion (cohort)</div>
+            </div>
+            <div style="width:120px; height:60px; border-radius:8px; background:#eef7ff; display:flex;align-items:center;justify-content:center">
+              <div style="font-weight:700; color:var(--lucid-cta)">+3%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Advanced Analytics — Funnel Efficiency</div>
+          <div style="display:flex; gap:12px; align-items:center">
+            <div style="flex:1">
+              <div style="height:40px; background:#e8f3ff; border-radius:8px; position:relative;">
+                <div style="width:62%; height:100%; background:linear-gradient(90deg,#00b2a9,#1687ff); border-radius:8px"></div>
+              </div>
+              <div class="muted" style="margin-top:8px">Average funnel conversion (MQL→Order)</div>
+            </div>
+            <div style="width:72px; text-align:center">
+              <div style="font-weight:700; font-size:18px">62%</div>
+              <div class="muted">Efficiency</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New: Vehicle Showcase -->
+      <div class="grid-2" style="margin-bottom:12px">
+        <div class="card">
+          <div class="section-title">Vehicle Showcase</div>
+          <div class="vehicle-grid">
+            <div class="vehicle-card">
+<img id="lucidLogoImg"
+     src="images/OIP__1_-removebg-preview.png"
+     alt="Lucid Logo"
+     onerror="fallbackLucidLogo()"
+     style="height:56px; width:150px; max-width:260px; object-fit:contain;" />  
+                   <div class="vehicle-meta">
+                <div style="font-weight:700">Lucid Air</div>
+                <div class="muted">Range: 520 mi • 0-60: 2.5s</div>
+                <div style="display:flex; gap:8px; align-items:center; margin-top:6px">
+                  <div style="background:#f0f7ff;border-radius:6px;padding:6px 8px">Orders: 182</div>
+                  <div style="background:#fff7f0;border-radius:6px;padding:6px 8px">Deliveries: 54</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="vehicle-card">
+<img id="lucidLogoImg"
+     src="images/OIP__3_-removebg-preview.png"
+     alt="Lucid Logo"
+     onerror="fallbackLucidLogo()"
+     style="height:56px; width:150px; max-width:260px; object-fit:contain;" />     
+               <div class="vehicle-meta">
+                <div style="font-weight:700">Lucid Gravity</div>
+                <div class="muted">Range: 300+ mi • SUV platform</div>
+                <div style="display:flex; gap:8px; align-items:center; margin-top:6px">
+                  <div style="background:#eef7ff;border-radius:6px;padding:6px 8px">Interest: 420</div>
+                  <div style="background:#fff4f0;border-radius:6px;padding:6px 8px">Reservations: 24</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- keep original region chart in right column -->
+        <div class="card">
+          <div class="section-title">Revenue Mix — Product Lines</div>
+          <div style="height:220px; border-radius:8px; background:linear-gradient(180deg,#fff,#fcfdff); display:flex;align-items:center;justify-content:center">
+            <div class="muted">Donut chart placeholder</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- bottom analytics row -->
+      <div class="grid-analytics">
+        <div class="card">
+          <div class="section-title">Customer Lifetime Value (by cohort)</div>
+          <div style="height:120px; display:flex; align-items:center; justify-content:center;">
+            <div class="muted">CLTV chart placeholder</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title">Inventory & Production Lead Time</div>
+          <div style="height:120px; display:flex; align-items:center; justify-content:center;">
+            <div class="muted">Lead time KPI</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title">Test Drive Impact (conversion)</div>
+          <div style="height:120px; display:flex; align-items:center; justify-content:center;">
+            <div class="muted">Test drive -> order conversion</div>
           </div>
         </div>
       </div>
@@ -513,6 +643,54 @@
       tr.innerHTML = `<td>${i+1}</td><td>${a.name}</td><td>${a.record}</td><td>${a.country}</td><td>${a.city}</td><td>${a.industry}</td><td>${a.owner}</td>`;
       tbody.appendChild(tr);
     });
+
+    // sample contacts (for accounts page)
+    const contactsData = {
+      'Lucid Motors': [
+        {name:'Peter Rawlinson', role:'CEO', email:'p.rawlinson@lucidmotors.com', phone:'+1-555-0101'},
+        {name:'Maya Patel', role:'VP Sales', email:'maya.patel@lucidmotors.com', phone:'+1-555-0102'}
+      ],
+      'Lucid Fleet Services': [
+        {name:'Daniel Kim', role:'Fleet Ops', email:'d.kim@lucidfleet.com', phone:'+1-555-0201'},
+        {name:'Olivia Chen', role:'Service Lead', email:'olivia.chen@lucidfleet.com', phone:'+1-555-0202'}
+      ],
+      'default': [
+        {name:'Sarah Connor', role:'Account Manager', email:'s.connor@example.com', phone:'+1-555-0301'}
+      ]
+    };
+
+    // render contacts list
+    const contactsListEl = document.getElementById('contactsList');
+    function renderContactsFor(accountName){
+      contactsListEl.innerHTML = ''; // clear
+      const list = contactsData[accountName] || contactsData['default'];
+      list.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'lead-item';
+        div.innerHTML = `
+          <div style="width:44px;height:44px;border-radius:8px;background:#eef7ff;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--lucid-primary)"> ${c.name.split(' ').map(n=>n[0]).join('')} </div>
+          <div style="flex:1">
+            <div style="font-weight:700">${c.name}</div>
+            <div class="muted">${c.role} • ${c.email}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="muted">${c.phone}</div>
+            <button class="btn" onclick="alert('Open contact: ${c.name}')">Open</button>
+          </div>
+        `;
+        contactsListEl.appendChild(div);
+      });
+
+      // small note
+      const note = document.createElement('div');
+      note.className = 'muted';
+      note.style.marginTop = '8px';
+      note.textContent = `Showing contacts for: ${accountName}`;
+      contactsListEl.appendChild(note);
+    }
+
+    // default: show Lucid Motors contacts
+    renderContactsFor('Lucid Motors');
 
     // keyboard shortcut for search
     document.addEventListener('keydown', (e)=> {
