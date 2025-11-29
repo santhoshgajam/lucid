@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Lucid — Salesforce LWC App Demo (responsive)</title>
+  <title>Lucid — Salesforce LWC App Demo (static)</title>
   <style>
+    /* ========== DESIGN TOKENS ========== */
     :root{
       --lucid-primary: #003c63;
       --lucid-accent: #00b2a9;
@@ -29,51 +30,38 @@
       -moz-osx-font-smoothing:grayscale;
     }
 
-    /* APP SHELL */
-    .app-shell{background:var(--card-bg); box-shadow: var(--shadow); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:40;}
+    /* ========== APP SHELL ========== */
+    .app-shell{background:var(--card-bg); box-shadow: var(--shadow); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:20;}
     .topbar{max-width:var(--max-page-width); margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 20px;}
     .left-actions, .right-actions{display:flex; align-items:center; gap:12px;}
-    .logo-wrap{display:flex; align-items:center; gap:10px;}
     .logo {display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:2px; color:var(--lucid-primary);}
-    .logo img{height:56px; display:block;}
-    .small-cloud{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px}
-    .small-cloud svg{width:22px;height:22px;display:block}
+    .logo img{height:26px}
+    /* launcher button (9 dots) */
+    .launcher-btn{background:transparent; border:none; padding:8px; cursor:pointer; border-radius:6px;}
+    .launcher-btn:hover{background:#f3f6fb}
+    .grid-dots{width:18px; height:18px; display:grid; grid-template-columns:repeat(3,1fr); gap:3px; align-items:center; justify-items:center}
+    .grid-dots span{width:4px; height:4px; background:#333; border-radius:50%}
 
     /* center search */
     .search-wrap{flex:1; display:flex; justify-content:center}
     .search-box{max-width:520px; width:100%; position:relative}
     .search-box input{width:100%; padding:10px 14px 10px 40px; border-radius:8px; border:1px solid var(--border); outline:none; background:#fff}
     .search-box svg{position:absolute; left:12px; top:50%; transform:translateY(-50%); opacity:0.6}
-
-    /* right small icons */
+    /* top right small icons */
     .icon-btn{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid transparent}
     .icon-btn:hover{background:#f3f6fb}
     .avatar {width:34px;height:34px;border-radius:50%;overflow:hidden;border:1px solid var(--border)}
 
-    /* secondary nav (moved launcher before Home) */
+    /* second nav */
     .secondary-nav{max-width:var(--max-page-width); margin:0 auto; padding:10px 20px; display:flex; align-items:center; gap:18px; border-bottom:4px solid #e9f2ff}
-    .nav-item{padding:6px 8px; cursor:pointer; border-radius:6px; color:var(--lucid-primary); font-weight:600; white-space:nowrap}
+    .nav-item{padding:6px 8px; cursor:pointer; border-radius:6px; color:var(--lucid-primary); font-weight:600}
     .nav-item.active{background:transparent; color:var(--lucid-primary)}
-    .launcher-small{display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:8px; cursor:pointer; border:1px solid transparent}
-    .grid-dots{width:18px; height:18px; display:grid; grid-template-columns:repeat(3,1fr); gap:3px; align-items:center; justify-items:center}
-    .grid-dots span{width:4px; height:4px; background:#333; border-radius:50%}
-
     .brand-mark{margin-left:auto; opacity:0.8; font-weight:700}
 
-    /* mobile nav */
-    .mobile-menu-btn{display:none; width:44px;height:44px;border-radius:8px;background:#fff;border:1px solid var(--border);align-items:center;justify-content:center}
-    .mobile-nav-overlay{position:fixed; inset:0; background:rgba(0,0,0,0.45); display:none; z-index:80}
-    .mobile-nav{position:fixed; left:0; top:0; bottom:0; width:86%; max-width:360px; background:#fff; box-shadow:0 6px 30px rgba(2,6,23,0.4); padding:20px; transform:translateX(-8%); transition:transform .22s ease; overflow:auto}
-    .mobile-nav.open{transform:translateX(0)}
-    .mobile-nav .nav-item{display:block; padding:12px 8px; border-radius:8px; margin-bottom:6px}
-    .mobile-nav .close-btn{display:flex; justify-content:flex-end; margin-bottom:8px}
-    .mobile-nav .close-btn button{background:transparent;border:none;font-size:20px;cursor:pointer}
-
-    /* PAGE LAYOUT */
+    /* ========== PAGE LAYOUT ========== */
     .page{max-width:var(--max-page-width); margin:20px auto; padding:0 20px 80px}
     .grid-3{display:grid; grid-template-columns: 1fr 1fr 360px; gap:var(--gap)}
     .grid-2{display:grid; grid-template-columns: 1fr 1fr; gap:var(--gap)}
-    .grid-analytics{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px}
 
     /* cards */
     .card{background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); padding:18px; box-shadow:none}
@@ -91,72 +79,37 @@
     .funnel .item{background:#fff; border-radius:6px; border:1px solid var(--border); padding:10px; text-align:center; flex:1}
     .funnel .num{font-weight:700; font-size:20px; margin-top:6px}
 
+    /* right column widgets */
     .order-progress{display:flex; flex-direction:column; gap:12px}
     .progress-track{height:10px; background:#eef3fb; border-radius:999px; padding:3px; position:relative}
     .progress-track .bar{height:6px; border-radius:999px; position:absolute; left:0; top:50%; transform:translateY(-50%)}
     .progress-steps{display:flex; justify-content:space-between; font-size:13px; color:var(--lucid-muted); margin-top:6px}
 
+    /* small lists */
     .two-col{display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center}
 
+    /* accounts table */
     table{width:100%; border-collapse:collapse}
-    .table-wrap{overflow-x:auto; border-radius:8px}
-    th, td{padding:10px 8px; text-align:left; border-bottom:1px solid #f1f3f6; white-space:nowrap}
+    th, td{padding:10px 8px; text-align:left; border-bottom:1px solid #f1f3f6}
     th{font-size:13px; color:var(--lucid-muted)}
     tr:hover td{background:#fff}
 
+    /* leads list */
     .lead-item{display:flex; align-items:center; gap:12px; padding:10px; border-radius:8px; border:1px solid var(--border); background:#fff; margin-bottom:10px}
 
+    /* small helpers */
     .muted{color:var(--lucid-muted); font-size:13px}
     .price{font-weight:700; font-size:18px}
     .btn{padding:8px 12px; border-radius:8px; border:none; cursor:pointer}
     .btn.primary{background:var(--lucid-cta); color:#fff}
     .inline-link{color:var(--lucid-cta); text-decoration:none; font-weight:600}
 
-    /* vehicle showcase */
-    .vehicle-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-    .vehicle-card{display:flex; gap:12px; align-items:center; border-radius:8px; padding:12px; border:1px solid var(--border); background:#fff}
-    .vehicle-card img{width:140px; height:80px; object-fit:cover; border-radius:8px}
-    .vehicle-meta{display:flex; flex-direction:column; gap:6px}
-
+    /* responsive */
     @media (max-width:1100px){
       .grid-3{grid-template-columns:1fr; gap:12px}
-      .grid-2{grid-template-columns:1fr; gap:12px}
-      .grid-analytics{grid-template-columns:1fr}
-      .vehicle-grid{grid-template-columns:1fr}
+      .secondary-nav{overflow:auto}
       .search-box{max-width:420px}
-      .logo img{height:46px}
-      .brand-mark{display:none}
-      .secondary-nav{overflow:auto; padding:8px 14px}
-      .nav-item{padding:8px 6px}
     }
-
-    /* Mobile-specific */
-    @media (max-width:760px){
-      .topbar{padding:8px 12px;}
-      .logo img{height:42px}
-      .search-wrap{display:block; padding:8px 12px 12px}
-      .search-box{width:100%; max-width:100%}
-      .left-actions{gap:8px}
-      .right-actions{gap:6px}
-      .avatar{width:30px;height:30px}
-      .icon-btn{width:34px;height:34px}
-      .secondary-nav{display:none} /* hide desktop secondary nav on small screens */
-      .mobile-menu-btn{display:flex}
-
-      /* KPI blocks stacked */
-      .kpi-row{flex-direction:column}
-      .kpi{width:100%}
-      .card{padding:14px}
-      .page{padding:0 12px 80px}
-      .table-wrap{overflow:auto}
-      th, td{padding:10px 6px}
-
-      /* reduce font sizes slightly */
-      .section-title{font-size:16px}
-    }
-
-    /* show mobile nav overlay when open */
-    .mobile-nav-overlay.show{display:block}
   </style>
 </head>
 <body>
@@ -164,40 +117,29 @@
   <header class="app-shell">
     <div class="topbar">
       <div class="left-actions">
-        <!-- mobile menu button (only shown on small screens) -->
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">☰</button>
-
-        <!-- small Salesforce cloud (before the Lucid logo) -->
-        <div class="small-cloud" title="Salesforce" aria-hidden="true">
-          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <g transform="translate(0 4) scale(0.85)" fill="#00A1E0"><path d="M48.6 23.8c-0.7-6.1-5.8-10.8-12.1-11.6-1.7-4.7-6.2-8.1-11.4-8.1-5.8 0-10.6 3.9-12.1 9.2-7 0.5-12.3 6.4-12.3 13.5C0.8 42 8.3 49 17.9 49h30.6C55.8 49 63 41.7 63 32.7 63 28.9 61.6 25.4 58.9 23.1 55.9 20.5 52 21.1 48.6 23.8z"></path></g>
-          </svg>
-        </div>
-
-        <!-- Lucid logo (local image with SVG fallback) -->
-        <div class="logo-wrap" role="img" aria-label="Lucid logo">
-          <div class="logo">
-            <img id="lucidLogoImg"
-                 src="images/png-transparent-lucid-motors-hd-logo-removebg-preview.png"
-                 alt="Lucid Logo"
-                 onerror="fallbackLucidLogo()"
-                 style="height:56px; width:150px; max-width:260px; object-fit:contain;" />
-            <div id="lucidSvgFallback" style="display:none">
-              <svg role="img" aria-label="Lucid Motors Logo" width="140" height="20" viewBox="0 0 400 23" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:22px;">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M71.2574 22.0428C69.5663 22.1166 13.2359 22.0537 11.536 22.0537C4.93578 22.0537 0 17.3682 0 12.3484V0.873549H8.70798V12.0618C8.70798 15.5618 11.3432 18.1759 15.04 18.1759H71.2574V22.0428Z" fill="#003c63"></path>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M170.097 22.0498C168.406 22.1236 108.239 22.0498 106.539 22.0498C99.9387 22.0498 95.0029 17.3643 95.0029 12.3445V0.869629H103.713V12.0579C103.713 15.5557 106.344 18.172 110.041 18.172H161.387V0.869629H170.097V22.0498Z" fill="#003c63"></path>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M268.332 22.0563C266.641 22.1302 207.104 22.0672 205.401 22.0672C189.991 22.0672 189.991 0.884889 205.401 0.884889C207.104 0.884889 266.641 0.821924 268.332 0.895745V4.76267H209.047C200.563 4.76267 200.563 18.1894 209.047 18.1894H268.332V22.0563Z" fill="#003c63"></path>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M292.079 22.3322H300.221V0.620117H292.079V22.3322Z" fill="#003c63"></path>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M323.967 22.0633V0.883211C325.658 0.80939 386.742 0.909266 388.442 0.909266C403.853 0.909266 403.853 22.0633 388.442 22.0633C386.742 22.0633 325.658 22.1372 323.967 22.0633ZM332.737 4.78704V18.1856H384.941C393.425 18.1856 393.425 4.78704 384.941 4.78704H332.737Z" fill="#003c63"></path>
-              </svg>
-            </div>
+        <!-- launcher (9 dots) -->
+        <button class="launcher-btn" title="App Launcher" onclick="alert('App launcher - demo')">
+          <div class="grid-dots" aria-hidden="true">
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
           </div>
-        </div>
+        </button>
+
+        <!-- logo (replace src with official Lucid logo if you want) -->
+        <div class="logo">
+          <!-- Suggested replacement: https://www.lucidmotors.com/content/dam/lucid/logos/lucid-logo.svg -->
+ <img id="lucidLogoImg"
+     src="images/png-transparent-lucid-motors-hd-logo-removebg-preview.png"
+     alt="Lucid Logo"
+     onerror="fallbackLucidLogo()"
+     style="height:56px; width:150px; max-width:260px; object-fit:contain;" />        </div>
       </div>
 
       <!-- centered search -->
       <div class="search-wrap" role="search">
         <div class="search-box">
+          <!-- search icon -->
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M21 21l-4.35-4.35" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             <circle cx="11" cy="11" r="6" stroke="#6b7280" stroke-width="2"/>
@@ -213,16 +155,7 @@
       </div>
     </div>
 
-    <!-- secondary nav: launcher BEFORE Home (hidden on mobile) -->
     <nav class="secondary-nav" id="secondaryNav">
-      <div class="launcher-small" title="App Launcher" onclick="alert('App Launcher demo')">
-        <div class="grid-dots" aria-hidden="true">
-          <span></span><span></span><span></span>
-          <span></span><span></span><span></span>
-          <span></span><span></span><span></span>
-        </div>
-      </div>
-
       <div class="nav-item active" data-page="home">Home</div>
       <div class="nav-item" data-page="accounts">Accounts</div>
       <div class="nav-item" data-page="sales">Sales</div>
@@ -230,30 +163,12 @@
       <div class="nav-item" data-page="leads">Leads</div>
       <div class="brand-mark">LUCID</div>
     </nav>
-
-    <!-- mobile nav overlay -->
-    <div class="mobile-nav-overlay" id="mobileNavOverlay" role="dialog" aria-hidden="true">
-      <div class="mobile-nav" id="mobileNavPane">
-        <div class="close-btn"><button id="mobileNavClose" aria-label="Close mobile nav">✕</button></div>
-        <div class="nav-item" data-page="home">Home</div>
-        <div class="nav-item" data-page="accounts">Accounts</div>
-        <div class="nav-item" data-page="sales">Sales</div>
-        <div class="nav-item" data-page="dashboards">Dashboards</div>
-        <div class="nav-item" data-page="leads">Leads</div>
-        <hr style="margin:12px 0; border:none; border-top:1px solid var(--border)">
-        <div style="font-weight:700; margin-bottom:8px">Quick Links</div>
-        <div class="nav-item">Reports</div>
-        <div class="nav-item">Chatter</div>
-        <div class="nav-item">Groups</div>
-      </div>
-    </div>
   </header>
 
   <!-- PAGES -->
   <main class="page" id="app">
     <!-- Home / Dashboard -->
     <section id="page-home" class="page-panel">
-      <!-- HOME left unchanged as requested -->
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px">
         <h1 style="margin:0; font-size:26px">Internal Sales Dashboard</h1>
         <div class="muted">Demo • Lucid Motors - Salesforce UI</div>
@@ -265,29 +180,30 @@
           <div class="card kpi-row" style="margin-bottom:16px">
             <div class="kpi">
               <div class="label">Total Leads</div>
-              <div class="value">620</div>
+              <div class="value">420</div>
             </div>
             <div class="kpi">
               <div class="label">Qualified Leads</div>
-              <div class="value">182</div>
+              <div class="value">107</div>
             </div>
             <div class="kpi">
               <div class="label">Active Opportunities</div>
-              <div class="value">96</div>
+              <div class="value">52</div>
             </div>
             <div class="kpi">
               <div class="label">Orders This Month</div>
-              <div class="value">24</div>
+              <div class="value">18</div>
             </div>
           </div>
 
           <div class="card" style="margin-bottom:16px">
-            <div class="section-title">Revenue Forecast (Lucid Region)</div>
+            <div class="section-title">Revenue Forecast</div>
             <div class="bar-chart">
+              <!-- simple bars -->
               <div style="display:flex; flex-direction:column; gap:12px; max-width:320px">
                 <div style="display:flex; gap:10px; align-items:center">
-                  <div style="width:120px">April Revenue</div>
-                  <div style="flex:1; height:18px; background:#1687ff; border-radius:6px; width:90%"></div>
+                  <div style="width:120px">January Revenue</div>
+                  <div style="flex:1; height:18px; background:#1687ff; border-radius:6px"></div>
                 </div>
                 <div style="display:flex; gap:10px; align-items:center">
                   <div style="width:120px">Qualified</div>
@@ -299,7 +215,7 @@
                 </div>
                 <div style="display:flex; gap:10px; align-items:center">
                   <div style="width:120px">Order Placed</div>
-                  <div style="flex:1; height:18px; background:#cfe8ff; border-radius:6px; width:35%"></div>
+                  <div style="flex:1; height:18px; background:#cfe8ff; border-radius:6px; width:30%"></div>
                 </div>
               </div>
             </div>
@@ -308,8 +224,8 @@
           <div class="card">
             <div class="section-title">A Sales Funnel</div>
             <div class="funnel" style="align-items:center">
-              <div class="item"><div class="muted">Lead</div><div class="num">620</div></div>
-              <div class="item"><div class="muted">Qualified</div><div class="num">182</div></div>
+              <div class="item"><div class="muted">Lead</div><div class="num">420</div></div>
+              <div class="item"><div class="muted">Qualified</div><div class="num">107</div></div>
               <div class="item"><div class="muted">Emplaced</div><div class="num">63</div></div>
             </div>
           </div>
@@ -320,7 +236,7 @@
           <div class="card" style="margin-bottom:16px">
             <div class="section-title">Top Performing Models</div>
             <div style="font-weight:700; font-size:16px">Lucid Air Grand Touring</div>
-            <div class="muted" style="margin-bottom:12px">Delivered on 06/15/2023 (Demo fleet)</div>
+            <div class="muted" style="margin-bottom:12px">Delivered on 06/15/2023</div>
             <div style="display:flex; gap:12px">
               <div style="flex:1" class="card">
                 <div style="display:flex; gap:10px; align-items:center">
@@ -337,9 +253,9 @@
           <div class="card" style="margin-bottom:16px">
             <div class="section-title">Engagement</div>
             <div style="display:grid; grid-template-columns:1fr auto; gap:8px">
-              <div>Test Drives</div><div>12</div>
-              <div>Campaign Responses</div><div>8</div>
-              <div>Emails</div><div>42</div>
+              <div>Test Drives</div><div>1</div>
+              <div>Campaign Responses</div><div>2</div>
+              <div>Emails</div><div>5</div>
             </div>
           </div>
 
@@ -347,13 +263,13 @@
             <div class="section-title">Open Cases</div>
             <div style="display:flex; gap:12px; align-items:center;">
               <div style="flex:1">
-                <div>Case LC-202405</div>
-                <div class="muted">Order Processing</div>
+                <div>Case 010022</div>
+                <div class="muted">Order Placed</div>
                 <div style="height:8px; background:#e8f3ff; border-radius:8px; margin-top:8px;">
-                  <div style="width:48%; height:8px; background:#1687ff; border-radius:8px"></div>
+                  <div style="width:70%; height:8px; background:#1687ff; border-radius:8px"></div>
                 </div>
               </div>
-              <div style="min-width:140px; text-align:right"><small class="muted">Updated 05/2024</small></div>
+              <div style="min-width:140px; text-align:right"><small class="muted">02/AZ • 04/2024</small></div>
             </div>
           </div>
         </div>
@@ -362,7 +278,7 @@
         <aside>
           <div class="card order-progress" style="margin-bottom:16px">
             <div class="section-title">Vehicle Order Status</div>
-            <div class="progress-track" aria-hidden="true">
+            <div class="progress-track">
               <div class="bar" style="width:48%; background:linear-gradient(90deg,var(--lucid-cta),#ff9a3c)"></div>
             </div>
             <div class="progress-steps">
@@ -377,15 +293,10 @@
             <div class="section-title">Order Placed</div>
             <div style="display:flex; gap:12px; align-items:center">
               <div style="flex:1">
-                <div style="font-weight:700">Order: LC-000214</div>
+                <div style="font-weight:700">Order Approve</div>
                 <div class="muted">Manufacturing</div>
               </div>
-              <div style="width:140px">
- <img id="lucidLogoImg"
-     src="images/download-removebg-preview.png"
-     alt="Lucid Logo"
-     onerror="fallbackLucidLogo()"
-     style="height:56px; width:150px; max-width:260px; object-fit:contain;" />                  </div>
+              <div style="width:140px"><img src="https://images.unsplash.com/photo-1549924231-f129b911e442?q=80&w=800&auto=format&fit=crop" alt="car" style="width:100%; border-radius:8px; object-fit:cover"></div>
             </div>
 
             <hr style="border:none; border-top:1px solid var(--border); margin:12px 0">
@@ -417,18 +328,18 @@
 
     <!-- Accounts page -->
     <section id="page-accounts" class="page-panel" style="display:none">
-      <h1 class="section-title">Accounts — Western Region Accounts (Lucid Demo)</h1>
+      <h1 class="section-title">Accounts — Western Region Accounts</h1>
       <div class="card" style="margin-bottom:12px">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th><th>Account Name</th><th>Record Type</th><th>Billing Country</th><th>Billing City</th><th>Industry</th><th>Account Owner</th>
-              </tr>
-            </thead>
-            <tbody id="accountsTableBody"></tbody>
-          </table>
-        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Account Name</th><th>Industry</th><th>Billing City</th><th>Phone</th><th>Account Owner</th>
+            </tr>
+          </thead>
+          <tbody id="accountsTableBody">
+            <!-- populated by JS -->
+          </tbody>
+        </table>
       </div>
 
       <div class="grid-2" style="margin-top:12px">
@@ -437,9 +348,9 @@
           <div style="display:flex; gap:8px; align-items:center">
             <div style="width:120px; height:120px; border-radius:999px; background:conic-gradient(#1687ff 40%, #00b2a9 30%, #ffd27a 30%); display:flex;align-items:center;justify-content:center; font-weight:700; color:#fff">22</div>
             <div>
-              <div>Technology <span class="muted">9</span></div>
-              <div>Manufacturing <span class="muted">7</span></div>
-              <div>Automotive <span class="muted">3</span></div>
+              <div>Technology <span class="muted">11</span></div>
+              <div>Manufacturing <span class="muted">4</span></div>
+              <div>Retail <span class="muted">3</span></div>
             </div>
           </div>
         </div>
@@ -447,18 +358,10 @@
         <div class="card">
           <div class="section-title">Recent Accounts</div>
           <ul style="list-style:none; padding:0; margin:0">
-            <li style="padding:8px 0; border-bottom:1px dashed #f0f3f6">Lucid Motors <div class="muted">Newark, CA</div></li>
-            <li style="padding:8px 0; border-bottom:1px dashed #f0f3f6">Lucid Fleet Services <div class="muted">Palo Alto, CA</div></li>
-            <li style="padding:8px 0;">Acme Partners <div class="muted">San Mateo</div></li>
+            <li style="padding:8px 0; border-bottom:1px dashed #f0f3f6">Acme Partners <div class="muted">San Mateo</div></li>
+            <li style="padding:8px 0; border-bottom:1px dashed #f0f3f6">Allied Technologies <div class="muted">Multnomah</div></li>
+            <li style="padding:8px 0;">Global Systems <div class="muted">San Francisco</div></li>
           </ul>
-        </div>
-      </div>
-
-      <!-- NEW: Contacts card (for accounts page) -->
-      <div style="margin-top:16px">
-        <div class="card">
-          <div class="section-title">Contacts</div>
-          <div id="contactsList"></div>
         </div>
       </div>
     </section>
@@ -468,17 +371,15 @@
       <h1 class="section-title">Sales — Opportunities</h1>
       <div class="grid-2">
         <div class="card">
-          <div class="section-title">Active Opportunities (Lucid)</div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Opportunity</th><th>Account</th><th>Stage</th><th>Amount</th></tr></thead>
-              <tbody>
-                <tr><td>Air GT Order</td><td>Lucid Motors</td><td>Proposal</td><td>$198,000</td></tr>
-                <tr><td>Fleet - Gravity</td><td>Lucid Fleet Services</td><td>Negotiation</td><td>$520,000</td></tr>
-                <tr><td>Air Standard</td><td>Acme Partners</td><td>Closed Won</td><td>$86,000</td></tr>
-              </tbody>
-            </table>
-          </div>
+          <div class="section-title">Active Opportunities</div>
+          <table>
+            <thead><tr><th>Opportunity</th><th>Account</th><th>Stage</th><th>Amount</th></tr></thead>
+            <tbody>
+              <tr><td>Air GT Order</td><td>Acme Partners</td><td>Proposal</td><td>$198,000</td></tr>
+              <tr><td>Fleet - Gravity</td><td>Allied Technologies</td><td>Negotiation</td><td>$520,000</td></tr>
+              <tr><td>Air Standard</td><td>Global Systems</td><td>Closed Won</td><td>$86,000</td></tr>
+            </tbody>
+          </table>
         </div>
 
         <div class="card">
@@ -492,135 +393,22 @@
       </div>
     </section>
 
-    <!-- Dashboards page (UPDATED) -->
+    <!-- Dashboards page -->
     <section id="page-dashboards" class="page-panel" style="display:none">
-      <h1 class="section-title">Dashboards — Lucid Executive & Analytics View</h1>
-
-      <!-- top KPI row (kept) -->
-      <div class="grid-2" style="margin-bottom:12px">
+      <h1 class="section-title">Dashboards</h1>
+      <div class="grid-2">
         <div class="card">
           <div class="section-title">Executive KPI</div>
           <div style="display:flex; gap:12px">
-            <div class="kpi"><div class="label">Revenue</div><div class="value">$12.4M</div></div>
-            <div class="kpi"><div class="label">Gross Margin</div><div class="value">42%</div></div>
-            <div class="kpi"><div class="label">Orders</div><div class="value">324</div></div>
+            <div class="kpi"><div class="label">Revenue</div><div class="value">$3.8M</div></div>
+            <div class="kpi"><div class="label">Gross Margin</div><div class="value">95%</div></div>
+            <div class="kpi"><div class="label">Orders</div><div class="value">142</div></div>
           </div>
         </div>
 
         <div class="card">
           <div class="section-title">Sales by Region</div>
-          <div style="height:160px; border-radius:8px; background:linear-gradient(180deg,#fff,#fcfdff); display:flex;align-items:center;justify-content:center">
-            <div class="muted">Regional map/chart placeholder</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- analytics mini grid -->
-      <div class="grid-analytics" style="margin-bottom:12px">
-        <div class="card">
-          <div class="section-title">Advanced Analytics — Monthly Trend</div>
-          <svg width="100%" height="80" viewBox="0 0 200 80" preserveAspectRatio="none" aria-hidden="true">
-            <polyline fill="none" stroke="#1687ff" stroke-width="3" points="0,60 30,45 60,30 90,20 120,28 150,18 180,22 200,14"/>
-          </svg>
-          <div class="muted" style="margin-top:8px">Revenue trend (last 8 months)</div>
-        </div>
-
-        <div class="card">
-          <div class="section-title">Advanced Analytics — Cohort Conversion</div>
-          <div style="display:flex; gap:8px; align-items:center">
-            <div style="flex:1">
-              <div style="font-weight:700; font-size:20px">24%</div>
-              <div class="muted">New-to-Order Conversion (cohort)</div>
-            </div>
-            <div style="width:120px; height:60px; border-radius:8px; background:#eef7ff; display:flex;align-items:center;justify-content:center">
-              <div style="font-weight:700; color:var(--lucid-cta)">+3%</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="section-title">Advanced Analytics — Funnel Efficiency</div>
-          <div style="display:flex; gap:12px; align-items:center">
-            <div style="flex:1">
-              <div style="height:40px; background:#e8f3ff; border-radius:8px; position:relative;">
-                <div style="width:62%; height:100%; background:linear-gradient(90deg,#00b2a9,#1687ff); border-radius:8px"></div>
-              </div>
-              <div class="muted" style="margin-top:8px">Average funnel conversion (MQL→Order)</div>
-            </div>
-            <div style="width:72px; text-align:center">
-              <div style="font-weight:700; font-size:18px">62%</div>
-              <div class="muted">Efficiency</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Vehicle Showcase -->
-      <div class="grid-2" style="margin-bottom:12px">
-        <div class="card">
-          <div class="section-title">Vehicle Showcase</div>
-          <div class="vehicle-grid">
-            <div class="vehicle-card">
-<img id="lucidLogoImg"
-     src="images/OIP__1_-removebg-preview.png"
-     alt="Lucid Logo"
-     onerror="fallbackLucidLogo()"
-     style="height:56px; width:150px; max-width:260px; object-fit:contain;" />  
-                   <div class="vehicle-meta">
-                <div style="font-weight:700">Lucid Air</div>
-                <div class="muted">Range: 520 mi • 0-60: 2.5s</div>
-                <div style="display:flex; gap:8px; align-items:center; margin-top:6px">
-                  <div style="background:#f0f7ff;border-radius:6px;padding:6px 8px">Orders: 182</div>
-                  <div style="background:#fff7f0;border-radius:6px;padding:6px 8px">Deliveries: 54</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="vehicle-card">
-<img id="lucidLogoImg"
-     src="images/OIP__3_-removebg-preview.png"
-     alt="Lucid Logo"
-     onerror="fallbackLucidLogo()"
-     style="height:56px; width:150px; max-width:260px; object-fit:contain;" />               <div class="vehicle-meta">
-                <div style="font-weight:700">Lucid Gravity</div>
-                <div class="muted">Range: 300+ mi • SUV platform</div>
-                <div style="display:flex; gap:8px; align-items:center; margin-top:6px">
-                  <div style="background:#eef7ff;border-radius:6px;padding:6px 8px">Interest: 420</div>
-                  <div style="background:#fff4f0;border-radius:6px;padding:6px 8px">Reservations: 24</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- revenue mix -->
-        <div class="card">
-          <div class="section-title">Revenue Mix — Product Lines</div>
-          <div style="height:220px; border-radius:8px; background:linear-gradient(180deg,#fff,#fcfdff); display:flex;align-items:center;justify-content:center">
-            <div class="muted">Donut chart placeholder</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- bottom analytics row -->
-      <div class="grid-analytics">
-        <div class="card">
-          <div class="section-title">Customer Lifetime Value (by cohort)</div>
-          <div style="height:120px; display:flex; align-items:center; justify-content:center;">
-            <div class="muted">CLTV chart placeholder</div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="section-title">Inventory & Production Lead Time</div>
-          <div style="height:120px; display:flex; align-items:center; justify-content:center;">
-            <div class="muted">Lead time KPI</div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="section-title">Test Drive Impact (conversion)</div>
-          <div style="height:120px; display:flex; align-items:center; justify-content:center;">
-            <div class="muted">Test drive → order conversion</div>
-          </div>
+          <div style="height:160px; border-radius:8px; background:linear-gradient(180deg,#fff,#fcfdff)"></div>
         </div>
       </div>
     </section>
@@ -628,17 +416,17 @@
     <!-- Leads page -->
     <section id="page-leads" class="page-panel" style="display:none">
       <h1 class="section-title">Leads</h1>
-      <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px; flex-wrap:wrap">
-        <input placeholder="Filter leads..." style="padding:8px;border:1px solid var(--border); border-radius:8px; width:280px; min-width:160px"/>
+      <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px">
+        <input placeholder="Filter leads..." style="padding:8px;border:1px solid var(--border); border-radius:8px; width:280px"/>
         <button class="btn primary" onclick="alert('Add lead')">New Lead</button>
       </div>
 
       <div>
         <div class="lead-item">
-          <div style="width:44px;height:44px;border-radius:8px;background:#eef7ff;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--lucid-primary)">SS</div>
+          <div style="width:44px;height:44px;border-radius:8px;background:#eef7ff"></div>
           <div style="flex:1">
             <div style="font-weight:700">Samantha Smith-Jones</div>
-            <div class="muted">s.smith@example.com — Newark, CA</div>
+            <div class="muted">s.smith@example.com — London</div>
           </div>
           <div style="text-align:right">
             <div class="muted">Stage: Demo Booked</div>
@@ -647,10 +435,10 @@
         </div>
 
         <div class="lead-item">
-          <div style="width:44px;height:44px;border-radius:8px;background:#fff0f0;display:flex;align-items:center;justify-content:center;font-weight:700;color:#b53a3a">JW</div>
+          <div style="width:44px;height:44px;border-radius:8px;background:#fff0f0"></div>
           <div style="flex:1">
             <div style="font-weight:700">John Watson</div>
-            <div class="muted">j.watson@example.com — Palo Alto, CA</div>
+            <div class="muted">j.watson@example.com — San Francisco</div>
           </div>
           <div style="text-align:right">
             <div class="muted">Stage: Qualified</div>
@@ -662,134 +450,39 @@
   </main>
 
   <script>
-    // Logo fallback: if local image fails, inject inline svg
-    function fallbackLucidLogo(){
-      const img = document.getElementById('lucidLogoImg');
-      const fallback = document.getElementById('lucidSvgFallback');
-      if(img && fallback){
-        img.style.display = 'none';
-        const parent = img.parentElement;
-        parent.insertAdjacentElement('beforeend', fallback);
-        fallback.style.display = 'block';
-      }
-    }
+    // simple SPA nav
+    const navItems = document.querySelectorAll('.nav-item');
+    const panels = document.querySelectorAll('.page-panel');
 
-    // Mobile nav toggle
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
-    const mobileNavPane = document.getElementById('mobileNavPane');
-    const mobileNavClose = document.getElementById('mobileNavClose');
-
-    function openMobileNav(){
-      mobileNavOverlay.classList.add('show');
-      mobileNavPane.classList.add('open');
-      mobileNavOverlay.setAttribute('aria-hidden','false');
-    }
-    function closeMobileNav(){
-      mobileNavOverlay.classList.remove('show');
-      mobileNavPane.classList.remove('open');
-      mobileNavOverlay.setAttribute('aria-hidden','true');
-    }
-
-    mobileMenuBtn && mobileMenuBtn.addEventListener('click', openMobileNav);
-    mobileNavClose && mobileNavClose.addEventListener('click', closeMobileNav);
-    mobileNavOverlay && mobileNavOverlay.addEventListener('click', function(e){
-      if(e.target === mobileNavOverlay) closeMobileNav();
-    });
-
-    // SPA nav (desktop + mobile)
-    function gotoPage(page){
-      const navItems = document.querySelectorAll('.nav-item');
-      const panels = document.querySelectorAll('.page-panel');
-      navItems.forEach(i => {
-        if(i.dataset.page === page) i.classList.add('active'); else i.classList.remove('active');
-      });
-      panels.forEach(p => p.style.display = (p.id === 'page-' + page) ? '' : 'none');
-      window.scrollTo(0,0);
-    }
-
-    // attach click events to both desktop nav and mobile nav items
-    document.querySelectorAll('.nav-item').forEach(item => {
+    navItems.forEach(item => {
       item.addEventListener('click', () => {
+        navItems.forEach(i=>i.classList.remove('active'));
+        item.classList.add('active');
         const page = item.dataset.page;
-        if(page) gotoPage(page);
-        // if mobile, close overlay
-        closeMobileNav();
+        panels.forEach(p => p.style.display = p.id === 'page-' + page ? '' : 'none');
       });
     });
 
-    // show home by default
-    gotoPage('home');
-
-    // sample accounts (Lucid-inclusive)
+    // populate accounts table with sample data
     const accounts = [
-      {name:'Lucid Motors', record:'OEM', country:'USA', city:'Newark', industry:'Automotive', owner:'lucid-sales'},
-      {name:'Lucid Fleet Services', record:'Partner', country:'USA', city:'Palo Alto', industry:'Automotive', owner:'fleet-team'},
-      {name:'Acme Partners', record:'Partner', country:'USA', city:'San Mateo', industry:'Technology', owner:'vchannel'},
-      {name:'Allied Technologies', record:'End User', country:'USA', city:'Multnomah', industry:'Technology', owner:'bwest'},
-      {name:'Global Systems', record:'Partner', country:'USA', city:'San Francisco', industry:'Manufacturing', owner:'bwest'}
+      {name:'Acme Partners', industry:'Technology', city:'San Mateo', phone:'(794) 635-0153', owner:'vchannel'},
+      {name:'Allied Technologies', industry:'Technology', city:'Multnomah', phone:'(494) 791-0153', owner:'bwest'},
+      {name:'Anaco Limited', industry:'Retail', city:'Multnomah', phone:'(655) 467-0153', owner:'bwest'},
+      {name:'Global Systems', industry:'Manufacturing', city:'San Francisco', phone:'(684) 604-3823', owner:'bwest'},
+      {name:'Meridian Partners', industry:'Technology', city:'San Francisco', phone:'(720) 232-8877', owner:'vchannel'}
     ];
     const tbody = document.getElementById('accountsTableBody');
     accounts.forEach((a,i) => {
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${i+1}</td><td>${a.name}</td><td>${a.record}</td><td>${a.country}</td><td>${a.city}</td><td>${a.industry}</td><td>${a.owner}</td>`;
+      tr.innerHTML = `<td>${i+1}</td><td>${a.name}</td><td>${a.industry}</td><td>${a.city}</td><td>${a.phone}</td><td>${a.owner}</td>`;
       tbody.appendChild(tr);
     });
 
-    // sample contacts (for accounts page)
-    const contactsData = {
-      'Lucid Motors': [
-        {name:'Peter Rawlinson', role:'CEO', email:'p.rawlinson@lucidmotors.com', phone:'+1-555-0101'},
-        {name:'Maya Patel', role:'VP Sales', email:'maya.patel@lucidmotors.com', phone:'+1-555-0102'}
-      ],
-      'Lucid Fleet Services': [
-        {name:'Daniel Kim', role:'Fleet Ops', email:'d.kim@lucidfleet.com', phone:'+1-555-0201'},
-        {name:'Olivia Chen', role:'Service Lead', email:'olivia.chen@lucidfleet.com', phone:'+1-555-0202'}
-      ],
-      'default': [
-        {name:'Sarah Connor', role:'Account Manager', email:'s.connor@example.com', phone:'+1-555-0301'}
-      ]
-    };
-
-    // render contacts list
-    const contactsListEl = document.getElementById('contactsList');
-    function renderContactsFor(accountName){
-      contactsListEl.innerHTML = ''; // clear
-      const list = contactsData[accountName] || contactsData['default'];
-      list.forEach(c => {
-        const div = document.createElement('div');
-        div.className = 'lead-item';
-        div.innerHTML = `
-          <div style="width:44px;height:44px;border-radius:8px;background:#eef7ff;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--lucid-primary)"> ${c.name.split(' ').map(n=>n[0]).join('')} </div>
-          <div style="flex:1">
-            <div style="font-weight:700">${c.name}</div>
-            <div class="muted">${c.role} • ${c.email}</div>
-          </div>
-          <div style="text-align:right">
-            <div class="muted">${c.phone}</div>
-            <button class="btn" onclick="alert('Open contact: ${c.name}')">Open</button>
-          </div>
-        `;
-        contactsListEl.appendChild(div);
-      });
-
-      const note = document.createElement('div');
-      note.className = 'muted';
-      note.style.marginTop = '8px';
-      note.textContent = `Showing contacts for: ${accountName}`;
-      contactsListEl.appendChild(note);
-    }
-
-    // default: show Lucid Motors contacts
-    renderContactsFor('Lucid Motors');
-
-    // keyboard shortcut for search
+    // quick keyboard: press "/" focus search
     document.addEventListener('keydown', (e)=> {
       if(e.key === '/') {
-        if(document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'){
-          e.preventDefault();
-          document.getElementById('globalSearch').focus();
-        }
+        e.preventDefault();
+        document.getElementById('globalSearch').focus();
       }
     });
   </script>

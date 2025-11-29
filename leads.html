@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Lucid — Leads</title>
+  <link rel="stylesheet" href="common.css" />
+  <style>
+    /* leads-specific */
+    .leads-hero{
+      background: linear-gradient(90deg,#003c63,#0a4b7a);
+      color: #fff;
+      border-radius: 8px;
+      padding:18px;
+      display:flex;
+      gap:18px;
+      align-items:center;
+      flex-wrap:wrap;
+      box-shadow:0 6px 18px rgba(2,10,24,0.18);
+      margin-bottom:12px;
+    }
+    .leads-kpis{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+    .leads-kpi{
+      min-width:110px;
+      padding:12px 16px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .leads-kpi .label{font-size:13px; color:rgba(255,255,255,0.85)}
+    .leads-kpi .num{font-size:20px; font-weight:800; color:#fff}
+    .hero-right{margin-left:auto; display:flex; gap:10px; align-items:center}
+    .hero-filter{background:rgba(255,255,255,0.06); border-radius:999px; padding:8px 12px; color:#e6f7ff; font-weight:600}
+    .list-actions{display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap}
+    .list-actions .btn{background:#fff; border-radius:6px; padding:8px 10px; font-weight:600; cursor:pointer}
+    .table-wrap{background:#fff; border-radius:8px; padding:0; border:1px solid var(--border)}
+    table.leads-table{width:100%; border-collapse:collapse}
+    table.leads-table thead th{background:#fafbfd; padding:12px 10px; color:var(--lucid-muted); font-weight:700; font-size:13px; text-align:left; border-bottom:1px solid #eef3f8}
+    table.leads-table tbody tr td{padding:12px 10px; border-bottom:1px solid #f1f4f7; vertical-align:middle}
+    .lead-name{color:var(--lucid-primary); font-weight:700}
+    .lead-meta{color:var(--lucid-muted); font-size:13px}
+    .lead-actions button{background:transparent;border:1px solid var(--border); padding:6px 8px; border-radius:6px; cursor:pointer}
+    .count-badge{background:rgba(255,255,255,0.06); padding:6px 10px; border-radius:999px; font-weight:700; color:#fff}
+
+    @media (max-width:900px){
+      .hero-right{width:100%; justify-content:flex-start}
+      .leads-hero{padding:12px}
+      .leads-kpi{width:100%; gap:8px}
+      .leads-kpi .num{font-size:18px}
+      table.leads-table thead th, table.leads-table tbody td{padding:10px 8px}
+    }
+  </style>
+</head>
+<body>
+  <header class="app-shell" role="banner">
+    <div class="topbar" aria-label="Topbar">
+      <div class="left-actions" style="min-width:0;">
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">☰</button>
+        <div class="small-cloud" title="Salesforce" aria-hidden="true">
+         <img id="lucidLogoImg"
+     src="images/5950420-middle-removebg-preview.png"
+     alt="Lucid Logo"
+     onerror="fallbackLucidLogo()"
+     style="height:36px; width:100px; max-width:260px; object-fit:contain;" />
+        </div>
+
+        <div class="logo-wrap" role="img" aria-label="Lucid logo">
+          <div class="logo">
+<img id="lucidLogoImg"
+     src="images/png-transparent-lucid-motors-hd-logo-removebg-preview.png"
+     alt="Lucid Logo"
+     onerror="fallbackLucidLogo()"
+     style="height:56px; width:150px; max-width:260px; object-fit:contain;" />                 <div id="lucidSvgFallback" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-wrap" role="search">
+        <div class="search-box">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21 21l-4.35-4.35" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="11" cy="11" r="6" stroke="#6b7280" stroke-width="2"/>
+          </svg>
+          <input id="globalSearch" placeholder="Search Salesforce" aria-label="Search" />
+        </div>
+      </div>
+
+      <div class="right-actions">
+        <button class="icon-btn" title="Notifications" aria-label="Notifications">🔔</button>
+        <button class="icon-btn" title="Help" aria-label="Help">?</button>
+        <div class="avatar" aria-hidden="true"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop&crop=faces" alt="avatar" style="width:100%;height:100%;object-fit:cover"/></div>
+      </div>
+    </div>
+
+    <nav class="secondary-nav" id="secondaryNav" aria-label="Primary navigation">
+      <div class="launcher-small" title="App Launcher" onclick="alert('App Launcher demo')">
+        <div class="grid-dots" aria-hidden="true">
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <a href="home.html" class="nav-item" data-page="home" role="link">Home</a>
+      <a href="accounts.html" class="nav-item" data-page="accounts" role="link">Accounts</a>
+      <a href="sales.html" class="nav-item" data-page="sales" role="link">Sales</a>
+      <a href="dashboards.html" class="nav-item" data-page="dashboards" role="link">Dashboards</a>
+      <a href="leads.html" class="nav-item active" data-page="leads" role="link">Leads</a>
+      <div class="brand-mark" aria-hidden="true">LUCID</div>
+    </nav>
+  </header>
+
+  <main class="page" id="app">
+    <section id="leads-section">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px">
+        <h1 style="margin:0; font-size:22px">My Leads</h1>
+        <div class="muted">Lucid Motors — sample demo</div>
+      </div>
+
+      <!-- HERO KPI banner -->
+      <div class="leads-hero" role="region" aria-label="Leads summary">
+        <div class="leads-kpis" aria-hidden="true">
+          <div class="leads-kpi">
+            <div class="label">Total Leads</div>
+            <div class="num">904</div>
+            <div class="dash-muted">Created this quarter</div>
+          </div>
+
+          <div class="leads-kpi">
+            <div class="label">No Activity</div>
+            <div class="num">122</div>
+            <div class="dash-muted">No open tasks</div>
+          </div>
+
+          <div class="leads-kpi">
+            <div class="label">Idle</div>
+            <div class="num">48</div>
+            <div class="dash-muted">No engagement</div>
+          </div>
+
+          <div class="leads-kpi">
+            <div class="label">Overdue</div>
+            <div class="num">6</div>
+            <div class="dash-muted">Actions past due</div>
+          </div>
+
+          <div class="leads-kpi">
+            <div class="label">Due Today</div>
+            <div class="num">3</div>
+            <div class="dash-muted">Follow ups</div>
+          </div>
+
+          <div class="leads-kpi">
+            <div class="label">Upcoming</div>
+            <div class="num">12</div>
+            <div class="dash-muted">Scheduled</div>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="count-badge">25+ items • Filtered</div>
+          <div class="hero-filter">Created: This Quarter ▾</div>
+          <div class="hero-filter">Owner: Me ▾</div>
+        </div>
+      </div>
+
+      <!-- action buttons -->
+      <div class="list-actions" role="toolbar" aria-label="Lead actions">
+        <button class="btn" onclick="alert('Add to Campaign')">Add to Campaign</button>
+        <button class="btn" onclick="alert('Change Status')">Change Status</button>
+        <button class="btn" onclick="alert('Change Owner')">Change Owner</button>
+        <button class="btn" onclick="alert('Send Email')">Send Email</button>
+        <div style="margin-left:auto; display:flex; gap:8px">
+          <button class="btn" onclick="alert('New lead')">New</button>
+          <button class="btn" onclick="alert('List view')">List View ▾</button>
+        </div>
+      </div>
+
+      <!-- table -->
+      <div class="table-wrap" role="region" aria-label="Leads table">
+        <table class="leads-table" aria-describedby="leads-desc">
+          <thead>
+            <tr>
+              <th style="width:40px">#</th>
+              <th style="min-width:220px">Name</th>
+              <th style="min-width:160px">Title</th>
+              <th style="min-width:160px">Company</th>
+              <th style="min-width:120px">Lead Status</th>
+              <th style="min-width:140px">Lead Source</th>
+              <th style="min-width:120px">Last Activity</th>
+              <th style="width:120px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="leadsTableBody">
+            <!-- JS populates this -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="common.js"></script>
+  <script>
+    // sample Lucid leads data
+    const lucidLeads = [
+      {name:'Samantha Price', title:'Procurement Lead', company:'Lucid Motors', status:'Open', source:'Website', last:'2 days ago'},
+      {name:'Ethan Morales', title:'Fleet Manager', company:'Lucid Fleet Services', status:'Demo Booked', source:'Partner Event', last:'1 day ago'},
+      {name:'Olivia Chen', title:'Service Coordinator', company:'Lucid Motors', status:'Qualified', source:'Referral', last:'4 days ago'},
+      {name:'Daniel Kim', title:'Ops Manager', company:'Lucid Fleet Services', status:'Open', source:'Website', last:'6 days ago'},
+      {name:'Maya Patel', title:'VP Sales', company:'Lucid Motors', status:'Contacted', source:'Email Campaign', last:'3 hours ago'},
+      {name:'Peter Rawlinson', title:'Lead Engineer', company:'Lucid R&D', status:'Open', source:'Trade Show', last:'Nov 26'},
+      {name:'Grace Turner', title:'Service Advisor', company:'Lucid Motors', status:'Open', source:'Phone', last:'Nov 25'},
+      {name:'Lucas Wright', title:'Procurement', company:'Acme Partners', status:'Open', source:'Website', last:'Nov 24'},
+      {name:'Aisha Rahman', title:'Corporate Fleet', company:'Global Systems', status:'Qualified', source:'Partner', last:'Nov 23'},
+      {name:'Noah Bennett', title:'Logistics', company:'Lucid Logistics', status:'Demo Booked', source:'Webinar', last:'Nov 22'}
+    ];
+
+    // render leads table
+    const tbody = document.getElementById('leadsTableBody');
+    lucidLeads.forEach((l,i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${i+1}</td>
+        <td>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div style="width:36px;height:36px;border-radius:8px;background:#eef7ff;display:flex;align-items:center;justify-content:center;color:var(--lucid-primary);font-weight:800">
+              ${l.name.split(' ').map(n=>n[0]).join('')}
+            </div>
+            <div>
+              <div class="lead-name">${l.name}</div>
+              <div class="lead-meta">${l.company}</div>
+            </div>
+          </div>
+        </td>
+        <td>${l.title}</td>
+        <td>${l.company}</td>
+        <td>${l.status}</td>
+        <td>${l.source}</td>
+        <td class="lead-meta">${l.last}</td>
+        <td class="lead-actions">
+          <button title="Email" onclick="alert('Email ${l.name}')">✉</button>
+          <button title="Call" onclick="alert('Call ${l.name}')">📞</button>
+          <button title="More" onclick="alert('More for ${l.name}')">⋯</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // keep search shortcut working
+    document.addEventListener('keydown', (e)=> {
+      if(e.key === '/') {
+        if(document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'){
+          e.preventDefault();
+          const input = document.getElementById('globalSearch');
+          if(input) input.focus();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
