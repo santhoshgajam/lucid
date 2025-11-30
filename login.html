@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lucid | Login</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        background: #000;
+        color: #fff;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* Left Panel (Login Form) - UPDATED to Salesforce style */
+    .login-container {
+        width: 50%;
+        background: #f3f6f8;            /* page bg like Salesforce left area */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 48px 64px;
+        box-sizing: border-box;
+    }
+
+    /* small top logo above card (centered) */
+    .brand-small {
+        display:flex;
+        justify-content:center;
+        margin-bottom:18px;
+        width: 10px !important;
+    }
+    .brand-small img {
+        height:64px;
+        width:auto;
+        object-fit:contain;
+    }
+
+    /* Salesforce-like white card */
+    .sf-card {
+        width:100%;
+        max-width:320px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius:6px;
+        border:1px solid #e3e9ee;
+        box-shadow: 0 1px 0 rgba(0,0,0,0.02), 0 2px 6px rgba(16,24,32,0.04);
+        padding:18px 22px 22px 22px;
+        box-sizing:border-box;
+        color:#1b1f23;
+    }
+
+    /* top red alert exactly like screenshot */
+    .sf-alert {
+        color:#c0392b;
+        font-size:13px;
+        margin-bottom:12px;
+    }
+
+    .sf-field {
+        margin-bottom:14px;
+    }
+
+    .sf-label {
+        display:block;
+        font-size:13px;
+        color:#1573d1; /* blue label like Salesforce */
+        margin-bottom:6px;
+        font-weight:600;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        width:100%;
+        padding:10px 12px;
+        border-radius:4px;
+        border:1px solid #c9ced2;  /* subtle border */
+        background: #fff;
+        box-sizing:border-box;
+        font-size:15px;
+        color:#111;
+    }
+
+    input[type="text"]::placeholder,
+    input[type="password"]::placeholder {
+        color:#9aa3ab;
+    }
+
+    /* Big Salesforce-like blue button */
+    .sf-login-btn {
+        background: #1573d1;
+        color:#fff;
+        border:none;
+        width:100%;
+        padding:12px 14px;
+        border-radius:6px;
+        font-weight:700;
+        font-size:15px;
+        cursor:pointer;
+        margin-top:8px;
+    }
+    .sf-login-btn:active{ transform:translateY(1px); }
+
+    /* remember row with checkbox */
+    .sf-extra {
+        display:flex;
+        align-items:center;
+        justify-content:flex-start;
+        gap:10px;
+        margin-top:12px;
+        color:#39424a;
+        font-size:14px;
+    }
+    .sf-extra input[type="checkbox"]{ width:16px; height:16px; }
+
+    .sf-forgot {
+        display:block;
+        margin-top:14px;
+        color:#1573d1;
+        text-decoration:none;
+        font-size:14px;
+    }
+
+    /* small footer aligned below card (left) */
+    .sf-footer {
+        margin-top:24px;
+        text-align:center;
+        color:#7e8b92;
+        font-size:13px;
+    }
+
+    /* Right Side - Hero Section (unchanged) */
+    .hero {
+        width: 50%;
+        background: url('https://images.lucidmotors.com/hero/lucid-air.jpg') center/cover no-repeat;
+        position: relative;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        backdrop-filter: brightness(0.5);
+    }
+
+    .lucid-title {
+        position: absolute;
+        top: 40%;
+        left: 8%;
+        font-size: 90px;
+        font-weight: 300;
+        letter-spacing: 15px;
+        color: rgba(255,255,255,0.85);
+        text-transform: uppercase;
+    }
+
+    /* centered Lucid symbol on right */
+    .lucid-side-logo1 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: auto;
+        width: 900px;
+        max-width: 100%;
+        object-fit: contain;
+        opacity: 0.95;
+        transition: 0.3s ease;
+    }
+
+    @media(max-width: 900px) {
+        body {
+            flex-direction: column;
+        }
+        .login-container, .hero {
+            width: 100%;
+        }
+        .hero {
+            height: 40vh;
+        }
+        .lucid-title {
+            font-size: 40px;
+            letter-spacing: 8px;
+            top: 35%;
+        }
+        .sf-card { max-width: 92%; }
+        .brand-small img { height:56px; }
+        .lucid-side-logo1 { width:60%; }
+    }
+</style>
+</head>
+
+<body>
+
+<!-- Left Login Section (Salesforce-style card) -->
+<div class="login-container" role="main" aria-label="Log in area">
+    <!-- small top logo like screenshot (replace path if needed) -->
+   <div style="position:relative; width:100%; height:100%;">
+    <img id="lucidLogoImg"
+        src="images/png-transparent-lucid-motors-hd-logo-removebg-preview.png"
+        alt="Lucid Logo"
+        onerror="fallbackLucidLogo()"
+        style="
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+            height:56px;
+            width:150px;
+            max-width:260px;
+            object-fit:contain;
+        " />
+</div>
+
+
+    <!-- card -->
+    <div class="sf-card" role="form" aria-labelledby="signinTitle">
+        <div id="signinTitle" style="display:none">Sign in to Lucid</div>
+
+        <!-- top red alert text -->
+        <div class="sf-alert">
+            To access this page, you have to log in to Salesforce.
+        </div>
+
+        <!-- username -->
+        <div class="sf-field">
+            <label class="sf-label" for="username">Username</label>
+            <input id="username" type="text" value="Lucid" aria-label="Username" />
+        </div>
+
+        <!-- password -->
+        <div class="sf-field">
+            <label class="sf-label" for="password">Password</label>
+            <input id="password" type="password" value="lucid" aria-label="Password" />
+        </div>
+
+        <!-- login button -->
+        <div class="sf-field">
+            <button class="sf-login-btn" type="button" onclick="demoLogin()">Log In</button>
+        </div>
+
+        <!-- remember + forgot -->
+        <div class="sf-extra">
+            <label style="display:flex;align-items:center;gap:8px;">
+                <input type="checkbox" aria-label="Remember me" />
+                Remember me
+            </label>
+        </div>
+
+        <a class="sf-forgot" href="#">Forgot Your Password?</a>
+    </div>
+
+    <!-- footer like screenshot -->
+    <div class="sf-footer" aria-hidden="true">
+        © 2025 Salesforce, Inc. All rights reserved.
+    </div>
+</div>
+
+<!-- Right Hero Section (unchanged) -->
+<div class="hero" aria-hidden="true">
+    <div class="hero-overlay"></div>
+
+    <!-- Centered Lucid Logo -->
+    <img id="lucidLogoImg"
+        src="images/7d16ba651299d304e5288f9e203af6be.png"
+        alt="Lucid Logo"
+        onerror="fallbackLucidLogo()"
+        class="lucid-side-logo1" />
+</div>
+
+<script>
+ function demoLogin() {
+    const u = document.getElementById('username').value;
+    const p = document.getElementById('password').value;
+
+    if (u === 'Lucid' && p === 'lucid') {
+        window.location.href = "https://santhoshgajam.github.io/lucid/home.html";
+    } else {
+        alert('Invalid demo credentials.\nUse Username: Lucid  Password: lucid');
+    }
+}
+
+  // optional fallback function (can be customized)
+  function fallbackLucidLogo(){
+    const img = document.getElementById('lucidLogoImg');
+    if(img) img.src = 'images/png-transparent-lucid-motors-hd-logo-removebg-preview.png';
+  }
+</script>
+
+</body>
+</html>
